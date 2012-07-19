@@ -1,0 +1,6 @@
+cron:
+- description: every minutes
+  url: /msync.py
+  schedule: every 1 minutes
+
+
