@@ -80,13 +80,13 @@ def send_plurk_msgs(username,password,msg):
                      encode({'username': username,
                              'password': password,
                              'api_key': api_key}))
-        print fp.read()
+        fp.read()
         fp = opener.open(get_api_url('/Timeline/plurkAdd'),
                      encode({'content': msg,
                              'qualifier': 'says',
                              'lang': 'en',
                              'api_key': api_key}))
-        print fp.read()
+        fp.read()
     except:
         return traceback.print_exc()
 
