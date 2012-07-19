@@ -367,7 +367,7 @@ def parseTwitter(twitter_id,since_id="",):
                 no_sync.append(status)
     else:
         print "get twitter data error. "
-        print result.content
+        print result#.content
     return no_sync
 
 def sendpost(no_sync,config):
@@ -395,7 +395,7 @@ def sendpost(no_sync,config):
                     ret["renjian"] = send_renjian_msgs(config.get('renjian','username'), config.get('renjian','password'),text)
                 if "" != config.get('follow5','username'):
                     ret["follow5"] = send_follow5_msgs(config.get('follow5','username'), config.get('follow5','password'),text)
-                if "" != config.get('pingfm','username'):
+                if "" != config.get('pingfm','api_key'):
                     ret["pingfm"] = send_pingfm_msgs(config.get('pingfm','api_key'), config.get('pingfm','user_app_key'),text)
                 if "" != config.get('hellotxt','username'):
                     ret["hellotxt"] = send_hellotxt_msgs(config.get('hellotxt','username'), config.get('hellotxt','password'),text)
