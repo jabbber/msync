@@ -7,35 +7,35 @@ username=
 password=
 
 [sina]
-usrname=
+usermane=
 password=
 
 [163]
-usrname=
+usermane=
 password=
 
 [sohu]
-usrname=
+usermane=
 password=
 
 [fanfou]
-usrname=
+usermane=
 password=
 
 [9911]
-usrname=
+usermane=
 password=
 
 [zuosa]
-usrname=
+usermane=
 password=
 
 [renjian]
-usrname=
+usermane=
 password=
 
 [follow5]
-usrname=
+usermane=
 password=
 
 [pingfm]
@@ -43,9 +43,9 @@ api_key=
 user_app_key=
 
 [hellotxt]
-usrname=
+usermane=
 password=
 
 [wbto]
-usrname=
+usermane=
 password=
