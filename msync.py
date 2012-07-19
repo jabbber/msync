@@ -356,7 +356,6 @@ def parseTwitter(twitter_id,since_id="",):
 #    result = urlfetch.fetch(url,deadline=10)
     if result:#.status_code == 200:
         content=result#.content
-#        m= re.findall(r"(?i)</title><description>(?!@)([^<]+)</description>.*?<guid>http://twitter.com/mayjabber/statuses/([^<]+)</guid>", content)
         m= re.findall(r'(?i)<a href="/\S+/status/([^<]+?)"[\s\S]*?<p class="js-tweet-text">\s+(?!@)([^<]+?)\s+</p>', content)
         print "<html><body><ol>"
         no_sync = []
