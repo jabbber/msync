@@ -1,6 +1,6 @@
 [res]
 type=twitter
-username:=
+username=
 
 [plurk]
 username=
