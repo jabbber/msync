@@ -373,7 +373,7 @@ def parseTwitter(twitter_id,since_id="",):
         no_sync = []
         for status in m:
             id=status[0]
-            if id == "":#since_id:
+            if id == since_id:
                 break
             else:
                 if status[1].find('@',1) != -1:
