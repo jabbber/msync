@@ -87,6 +87,7 @@ def send_plurk_msgs(username,password,msg):
                              'lang': 'en',
                              'api_key': api_key}))
         fp.read()
+        print "plurk,"
     except:
         return traceback.print_exc()
 
@@ -108,6 +109,7 @@ def send_sina_msgs(username,password,msg):
             bk=result.content
         if bk.find("true"):
             pass
+            print "sina,"
         else:
             return False
     except:
@@ -348,6 +350,16 @@ def send_wbto_msgs(username,password,msg):
 	else:
 		return False
 
+def strip_tags(html):
+    from HTMLParser import HTMLParser
+    html=html.strip()
+    html=html.strip("\n")
+    result=[]
+    parse=HTMLParser()
+    parse.handle_data=result.append
+    parse.feed(html)
+    parse.close()
+    return "".join(result)
 #get one page of to user's replies, 20 messages at most. 
 def parseTwitter(twitter_id,since_id="",):
     salt = "".join(random.sample("abcdefghijklmnopqrstuvwxyz",6))
@@ -356,15 +368,18 @@ def parseTwitter(twitter_id,since_id="",):
 #    result = urlfetch.fetch(url,deadline=10)
     if result:#.status_code == 200:
         content=result#.content
-        m= re.findall(r'(?i)<a href="/\S+/status/([^<]+?)"[\s\S]*?<p class="js-tweet-text">\s+(?!@)([^<]+?)\s+</p>', content)
+        m= re.findall(r'(?i)<a href="/\S+/status/(\d+?)"[\s\S]*?<p class="js-tweet-text">\s+(?!@)(.+?)\s+</p>', content)
         print "<html><body><ol>"
         no_sync = []
         for status in m:
             id=status[0]
-            if id == since_id:
+            if id == "":#since_id:
                 break
             else:
-                no_sync.append(status)
+                if status[1].find('@',1) != -1:
+                    pass
+                else:
+                    no_sync.append(status)
     else:
         print "get twitter data error. "
         print result#.content
@@ -373,41 +388,45 @@ def parseTwitter(twitter_id,since_id="",):
 def sendpost(no_sync,config):
         for x in reversed(no_sync):
             id=x[0]
-            text=x[1]
-            if text.find('@',1) == -1 :
-                print "<li>",id,text,"</li><br />\n"
-                ret = {}
-                if "" != config.get('plurk','username'):
-                    ret["plurk"] = send_plurk_msgs(config.get('plurk','username'), config.get('plurk','password'),text)
-                if "" != config.get('sina','username'):
-                    ret["sina"] = send_sina_msgs(config.get('sina','username'), config.get('sina','password'),text)
-                if "" != config.get('163','username'):
-                    ret["163"] = send_163_msgs(config.get('163','username'), config.get('163','password'),text)
-                if "" != config.get('sohu','username'):
-                    ret["sohu"] = send_sohu_msgs(config.get('sohu','username'), config.get('sohu','password'),text)
-                if "" != config.get('fanfou','username'):
-                    ret["fanfou"] = send_fanfou_msgs(config.get('fanfou','username'), config.get('fanfou','password'),text)
-                if "" != config.get('9911','username'):
-                    ret["9911"] = send_9911_msgs(config.get('9911','username'), config.get('9911','password'),text)
-                if "" != config.get('zuosa','username'):
-                    ret["zuosa"] = send_zuosa_msgs(config.get('zuosa','username'), config.get('zuosa','password'),text)
-                if "" != config.get('renjian','username'):
-                    ret["renjian"] = send_renjian_msgs(config.get('renjian','username'), config.get('renjian','password'),text)
-                if "" != config.get('follow5','username'):
-                    ret["follow5"] = send_follow5_msgs(config.get('follow5','username'), config.get('follow5','password'),text)
-                if "" != config.get('pingfm','api_key'):
-                    ret["pingfm"] = send_pingfm_msgs(config.get('pingfm','api_key'), config.get('pingfm','user_app_key'),text)
-                if "" != config.get('hellotxt','username'):
-                    ret["hellotxt"] = send_hellotxt_msgs(config.get('hellotxt','username'), config.get('hellotxt','password'),text)
-                if "" != config.get('wbto','username'):
-                    ret["wbto"] = send_wbto_msgs(config.get('wbto','username'), config.get('wbto','password'),text)
-                msg=Twitter()
-                msg.id=id
-                msg.put()
-                for key in ret:
-                    if ret[key]:
-                        print "<p>%s sync failure</p>"%key
-                        #raise Exception,ret[key]
+            text=strip_tags(x[1])
+            truelink = lambda reobj:reobj.group(0)[:-4]+" "
+            text = re.sub(r'http://\S+… ', truelink, text)
+            print "<li>",id,text,"</li>"
+            
+            ret = {}
+            print "sync to: "
+            if "" != config.get('plurk','username'):
+                ret["plurk"] = send_plurk_msgs(config.get('plurk','username'), config.get('plurk','password'),text)
+            if "" != config.get('sina','username'):
+                ret["sina"] = send_sina_msgs(config.get('sina','username'), config.get('sina','password'),text)
+            if "" != config.get('163','username'):
+                ret["163"] = send_163_msgs(config.get('163','username'), config.get('163','password'),text)
+            if "" != config.get('sohu','username'):
+                ret["sohu"] = send_sohu_msgs(config.get('sohu','username'), config.get('sohu','password'),text)
+            if "" != config.get('fanfou','username'):
+                ret["fanfou"] = send_fanfou_msgs(config.get('fanfou','username'), config.get('fanfou','password'),text)
+            if "" != config.get('9911','username'):
+                ret["9911"] = send_9911_msgs(config.get('9911','username'), config.get('9911','password'),text)
+            if "" != config.get('zuosa','username'):
+                ret["zuosa"] = send_zuosa_msgs(config.get('zuosa','username'), config.get('zuosa','password'),text)
+            if "" != config.get('renjian','username'):
+                ret["renjian"] = send_renjian_msgs(config.get('renjian','username'), config.get('renjian','password'),text)
+            if "" != config.get('follow5','username'):
+                ret["follow5"] = send_follow5_msgs(config.get('follow5','username'), config.get('follow5','password'),text)
+            if "" != config.get('pingfm','api_key'):
+                ret["pingfm"] = send_pingfm_msgs(config.get('pingfm','api_key'), config.get('pingfm','user_app_key'),text)
+            if "" != config.get('hellotxt','username'):
+                ret["hellotxt"] = send_hellotxt_msgs(config.get('hellotxt','username'), config.get('hellotxt','password'),text)
+            if "" != config.get('wbto','username'):
+                ret["wbto"] = send_wbto_msgs(config.get('wbto','username'), config.get('wbto','password'),text)
+            print "<br />\n"
+            msg=Twitter()
+            msg.id=id
+            msg.put()
+            for key in ret:
+                if ret[key]:
+                    print "<p>%s sync failure</p>"%key
+                    #raise Exception,ret[key]
         print "</ol></body></html>"
         
 print ""
@@ -421,5 +440,6 @@ res_type = config.get('res','type')
 username = config.get('res','username')
 if res_type == "twitter":
     sendpost(parseTwitter(twitter_id=username,since_id=latest),config)
+
 else:
     print "Unsupport resource type '%s'"%res_type
