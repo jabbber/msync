@@ -368,7 +368,7 @@ def parseTwitter(twitter_id,since_id="",):
 #    result = urlfetch.fetch(url,deadline=10)
     if result:#.status_code == 200:
         content=result#.content
-        m= re.findall(r'(?i)<a href="/\S+/status/(\d+?)"[\s\S]*?<p class="js-tweet-text">\s+(?!@)(.+?)\s+</p>', content)
+        m= re.findall(r'(?i)<a href="/%s/status/(\d+?)"[\s\S]*?<p class="js-tweet-text">\s+(?!@)(.+?)\s+</p>'%twitter_id, content)
         print "<html><body><ol>"
         no_sync = []
         for status in m:
